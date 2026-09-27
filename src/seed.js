@@ -1,0 +1,3 @@
+require('dotenv').config();
+const bcrypt=require('bcryptjs'); const db=require('./config/db');
+(async()=>{try{const hash=await bcrypt.hash('Admin123*',10); const [[p]]=await db.query("SELECT id FROM personal WHERE dni='00000000'"); const [[r]]=await db.query("SELECT id FROM roles WHERE nombre='Administrador'"); await db.query("INSERT INTO usuarios(usuario,password_hash,personal_id,rol_id) VALUES ('admin',?,?,?) ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash),personal_id=VALUES(personal_id),rol_id=VALUES(rol_id)",[hash,p.id,r.id]); console.log('Usuario admin creado/actualizado.');}catch(e){console.error(e);process.exitCode=1}finally{await db.end()}})();
